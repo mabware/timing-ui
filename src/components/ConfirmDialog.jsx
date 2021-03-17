@@ -4,7 +4,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
-import { Input } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import actions from '../service/timingReconciliation';
 
 function DeleteDialog(props) {
@@ -32,18 +32,18 @@ function DeleteDialog(props) {
     >
       <DialogTitle>Confirm</DialogTitle>
       <DialogContent dividers>
-      <Input
-            value={penalty}
-            variant="outlined"
-            onChange={(e) => setPenalty(e.target.value)}
-            inputProps={{
-              step: 1,
-              min: 0,
-              max: 10,
-              type: 'number',
-            }}
-          />
-
+        <TextField
+              value={penalty}
+              variant="outlined"
+              label="Penalty"
+              onChange={(e) => setPenalty(e.target.value)}
+              inputProps={{
+                step: 1,
+                min: 0,
+                max: 10,
+                type: 'number',
+              }}
+            />
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={handleCancel} color="default">

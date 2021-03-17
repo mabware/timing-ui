@@ -27,7 +27,12 @@ function DeleteDialog(props) {
     >
       <DialogTitle>Stage</DialogTitle>
       <DialogContent dividers>
-        <TextField id="outlined-basic" label="Number" variant="outlined" onChange={(e) => setDriverNo(e.target.value)}/>
+        <TextField
+          id="outlined-basic"
+          label="Number"
+          variant="outlined"
+          onChange={(e) => setDriverNo(e.target.value)}
+          inputProps={{type: 'number'}}/>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={handleCancel} color="default">
