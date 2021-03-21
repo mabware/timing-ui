@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
-import Button from '@material-ui/core/Button';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
-import { TextField } from '@material-ui/core';
+import React from 'react';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { Button, DialogTitle, DialogContent, DialogActions, Dialog, Typography, CircularProgress } from '@material-ui/core';
+import { useQuery } from 'react-query';
 import actions from '../service/timingReconciliation';
+
+const useStyles = makeStyles((theme) => createStyles({
+  button: {
+    margin: theme.spacing(1),
+  },
+  warnButton: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.warning.main,
+    '&:hover': {
+      backgroundColor: theme.palette.warning.light,
+      color: '#FFF'
+    }
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  column: {
+    display: 'flex',
+    flexDirection: 'column'
+  }
+}));
 
 function DeleteDialog(props) {
   const { onClose, open, driverNo } = props;
-  const [ penalty, setPenalty ] = useState(0);
+  const classes = useStyles();
+  const { data, isLoading } = useQuery(['driver', driverNo], () => actions.getDriver(driverNo));
 
   const handleCancel = () => {
     onClose();
@@ -20,7 +40,17 @@ function DeleteDialog(props) {
     onClose();
   };
 
-  const handleOk = () => {
+  const handleDelete = () => {
+    actions.deleteDriver(driverNo);
+    onClose();
+  };
+
+  const handleIgnoreFinish = () => {
+    actions.ignoreFinish(driverNo);
+    onClose();
+  };
+  
+  const handleFinish = (penalty) => {
     actions.confirmDriver(driverNo, false, penalty);
     onClose();
   };
@@ -31,29 +61,51 @@ function DeleteDialog(props) {
       open={open}
     >
       <DialogTitle>Confirm</DialogTitle>
-      <DialogContent dividers>
-        <TextField
-              value={penalty}
-              variant="outlined"
-              label="Penalty"
-              onChange={(e) => setPenalty(e.target.value)}
-              inputProps={{
-                step: 1,
-                min: 0,
-                max: 10,
-                type: 'number',
-              }}
-            />
+      <DialogContent className={classes.column} dividers>
+        <Typography align="center">
+          { isLoading && <CircularProgress /> }
+          { !isLoading && data && `Time: ${data.time.toFixed(2)}s`}
+        </Typography>
+        <Button className={classes.button} variant="contained" onClick={() => handleFinish(0)} color="primary">
+          Clean Run
+        </Button>
+        <div className={classes.row}>
+          <Button className={classes.warnButton} variant="contained" onClick={() => handleFinish(1)} color="primary">
+            1 Cone
+          </Button>
+          <Button className={classes.warnButton} variant="contained" onClick={() => handleFinish(2)} color="primary">
+            2 Cone
+          </Button>
+        </div>
+        <div className={classes.row}>
+          <Button className={classes.warnButton} variant="contained" onClick={() => handleFinish(3)} color="primary">
+            3 Cone
+          </Button>
+          <Button className={classes.warnButton} variant="contained" onClick={() => handleFinish(4)} color="primary">
+            4 Cone
+          </Button>
+        </div>
+        <div className={classes.row}>
+          <Button className={classes.warnButton} variant="contained" onClick={() => handleFinish(5)} color="primary">
+            5 Cone
+          </Button>
+          <Button className={classes.warnButton} variant="contained" onClick={() => handleFinish(6)} color="primary">
+            6 Cone
+          </Button>
+        </div>
+        <Button className={classes.button} variant="contained" onClick={handleWrongTest} color="secondary">
+          WT
+        </Button>
+        <Button className={classes.button} variant="contained" onClick={handleIgnoreFinish} color="primary">
+          Ignore Finish
+        </Button>
+        <Button className={classes.button} variant="contained" onClick={handleDelete} color="primary">
+          Cancel Run
+        </Button>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={handleCancel} color="default">
-          Cancel
-        </Button>
-        <Button variant="contained" onClick={handleWrongTest} color="secondary">
-          WT
-        </Button>
-        <Button variant="contained" onClick={handleOk} color="primary">
-          Ok
+          Back
         </Button>
       </DialogActions>
     </Dialog>

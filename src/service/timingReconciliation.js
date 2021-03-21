@@ -23,6 +23,11 @@ const addDriver = async (id) => {
   return;
 }
 
+const getDriver = async (id) => {
+  const res = await fetch(`${REACT_APP_RECONCILIATION_URL}/driver/${id}`);
+  return await res.json();
+}
+
 const confirmDriver = async (id, wrongTest, penalty) => {
   await fetch(`${REACT_APP_RECONCILIATION_URL}/confirm`, {
     method: 'POST',
@@ -30,6 +35,17 @@ const confirmDriver = async (id, wrongTest, penalty) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ id, wrongTest, penalty }),
+  });
+  return;
+}
+
+const ignoreFinish = async (id) => {
+  await fetch(`${REACT_APP_RECONCILIATION_URL}/cancelFinish`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id }),
   });
   return;
 }
@@ -44,8 +60,10 @@ const reset = async () => {
 const actions = {
   getState,
   addDriver,
+  getDriver,
   deleteDriver,
   confirmDriver,
+  ignoreFinish,
   reset,
 }
 

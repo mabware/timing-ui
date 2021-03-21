@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import actions from './service/timingReconciliation';
 import { Typography, Chip, Button } from '@material-ui/core';
 import socketIOClient from "socket.io-client";
+import Admin from './Admin';
 import DeleteDialog from './components/DeleteDialog';
 import AddDialog from './components/AddDialog';
 import ConfirmDialog from './components/ConfirmDialog';
@@ -34,27 +36,33 @@ function App() {
   }, [queryClient]);
 
   return (
-    <>
+    <Router>
       <div className="App">
-        <Button variant="contained" color="primary" onClick={() => setAddDialogOpen(true)} >Stage Car</Button>
-        <Typography variant="subtitle1">STAGED</Typography>
-        <div style={{minHeight: '32px'}}>
-          {data && data.staged.map(renderDriver)}
-        </div>
-        <Typography variant="subtitle1">RUNNING</Typography>
-        <div style={{minHeight: '32px'}}>
-          {data && data.running.map(renderDriver)}
-        </div>
-        <Typography variant="subtitle1">FINISHED</Typography>
-        <div style={{minHeight: '32px'}}>
-          {data && data.finished.map(renderFinishedDriver)}
-        </div>
-        <Button variant="contained" color="secondary" onClick={actions.reset}>Reset Course</Button>
+        <Switch>
+          <Route path="/admin">
+            <Admin />
+          </Route>
+          <Route path="/">
+            <Button variant="contained" color="primary" onClick={() => setAddDialogOpen(true)} >Stage Car</Button>
+            <Typography variant="subtitle1">STAGED</Typography>
+            <div style={{minHeight: '32px'}}>
+              {data && data.staged.map(renderDriver)}
+            </div>
+            <Typography variant="subtitle1">RUNNING</Typography>
+            <div style={{minHeight: '32px'}}>
+              {data && data.running.map(renderDriver)}
+            </div>
+            <Typography variant="subtitle1">FINISHED</Typography>
+            <div style={{minHeight: '32px'}}>
+              {data && data.finished.map(renderFinishedDriver)}
+            </div>
+            <DeleteDialog open={deleteDialogOpen} driverNo={selectedDriver} onClose={() => setDeleteDialogOpen(false)}/>
+            <AddDialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}/>
+            <ConfirmDialog open={confirmDialogOpen} driverNo={selectedDriver} onClose={() => setConfirmDialogOpen(false)}/>
+          </Route>
+        </Switch>
       </div>
-      <DeleteDialog open={deleteDialogOpen} driverNo={selectedDriver} onClose={() => setDeleteDialogOpen(false)}/>
-      <AddDialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}/>
-      <ConfirmDialog open={confirmDialogOpen} driverNo={selectedDriver} onClose={() => setConfirmDialogOpen(false)}/>
-    </>
+    </Router>
   );
 }
 

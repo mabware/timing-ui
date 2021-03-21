@@ -36,7 +36,7 @@ function DeleteDialog(props) {
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={handleCancel} color="default">
-          Cancel
+          Back
         </Button>
         <Button variant="contained" onClick={handleOk} color="primary">
           Ok
