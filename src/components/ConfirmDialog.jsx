@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => createStyles({
 function DeleteDialog(props) {
   const { onClose, open, driverNo } = props;
   const classes = useStyles();
-  const { data, isLoading } = useQuery(['driver', driverNo], () => actions.getDriver(driverNo));
+  const { error, data, isLoading } = useQuery(['driver', driverNo], () => actions.getDriver(driverNo));
 
   const handleCancel = () => {
     onClose();
@@ -64,7 +64,8 @@ function DeleteDialog(props) {
       <DialogContent className={classes.column} dividers>
         <Typography align="center">
           { isLoading && <CircularProgress /> }
-          { !isLoading && data && `Time: ${data.time.toFixed(2)}s`}
+          { !isLoading && data && data.time && `Time: ${data.time}s`}
+          { (error || !(!isLoading && data && data.time)) && 'Error'}
         </Typography>
         <Button className={classes.button} variant="contained" onClick={() => handleFinish(0)} color="primary">
           Clean Run
